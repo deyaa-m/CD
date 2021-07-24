@@ -1,6 +1,10 @@
 ---
 - name: wait for server to be reachable
   wait_for_connection:
+    delay: 0
+    sleep: 10
+    connect_timeout: 3
+    timeout: 300
   
 - name: "update apt packages."
   become: yes
