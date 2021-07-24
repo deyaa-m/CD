@@ -1,4 +1,7 @@
 ---
+- name: wait for server to be reachable
+  wait_for_connection:
+  
 - name: "update apt packages."
   become: yes
   apt:
