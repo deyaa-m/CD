@@ -7,7 +7,7 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run: aws cloudformation create-stack --stack-name circle --template-body file:///CD/cf.yaml
+      - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml
 
 workflows:
   awscircle:
