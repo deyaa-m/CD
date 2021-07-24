@@ -9,6 +9,7 @@ jobs:
       - checkout
       - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml
       - run: aws cloudformation wait stack-create-complete --stack-name circle
+      - run: aws ec2 describe-instances --filters "Name=tag:Name,Values=circleci-Instance"  --output json --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" | grep IP | cut -d '"' -f 4 >> ~/ip
       
 
 workflows:
