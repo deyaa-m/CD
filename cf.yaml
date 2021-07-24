@@ -21,3 +21,9 @@ Resources:
          FromPort: '3000'
          ToPort: '3000'
          CidrIp: 0.0.0.0/0
+
+outputs:
+  IP4:
+    value: !GetAtt Ec2Instance.PublicIp
+    Export:
+      name: IP
