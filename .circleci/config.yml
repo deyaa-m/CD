@@ -32,9 +32,9 @@ jobs:
       #- attach_workspace:
       #  at: /tmp/
       - restore_cache:
-        keys:
-          - ip
-          - ${key}.pem
+          keys:
+            - ip
+            - ${key}.pem
       - checkout
       - run: ansible-playbook -i /tmp/ip main.yml --private-key /tmp/${key}.pem
 
