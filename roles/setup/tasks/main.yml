@@ -1,0 +1,16 @@
+---
+- name: "update apt packages."
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "index.js copy"
+  copy:
+    src: index.js
+    dest: ~/udacity/index.js
+
+    #- name: "upgrade packages"
+    #  become: yes
+    #  yum:
+    #    name: '*'
+    #    state: latest
