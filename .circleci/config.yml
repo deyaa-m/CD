@@ -31,7 +31,7 @@ jobs:
     steps:
       #- attach_workspace:
       #  at: /tmp/
-      restore_cache:
+      - restore_cache:
         keys:
           - ip
           - ${key}.pem
