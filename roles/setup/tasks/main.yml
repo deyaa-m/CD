@@ -9,6 +9,18 @@
     src: index.js
     dest: ~/udacity/index.js
 
+- name: install npm
+  become: yes
+  apt:
+    name: npm
+    state: present
+
+- name: install http server
+  become: yes
+  npm:
+    name: http-server
+    state: present
+
     #- name: "upgrade packages"
     #  become: yes
     #  yum:
