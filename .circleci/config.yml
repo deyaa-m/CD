@@ -5,9 +5,12 @@ jobs:
   CF:
     docker:
       - image: amazon/aws-cli
+    environment:
+      key: circleci
     steps:
       - checkout
-      - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml
+      - run: aws ec2 create-key-pair --key-name ${key} --output text > /tmp/circleci.pem
+      - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml --parameters ParameterKey=KeyName,ParameterValue=${key}
       - run: aws cloudformation wait stack-create-complete --stack-name circle
       - run: echo "[all]" > /tmp/ip
       - run: aws ec2 describe-instances --filters "Name=tag:Name,Values=circleci-Instance"  --output json --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" | grep IP | cut -d '"' -f 4 >> /tmp/ip
@@ -21,7 +24,7 @@ jobs:
       - attach_workspace:
         at: /tmp/ip
       - checkout
-      - run: ansible-playbook -i /tmp/ip main.yml
+      - run: ansible-playbook -i /tmp/ip main.yml 
 
 workflows:
   awscircle:
