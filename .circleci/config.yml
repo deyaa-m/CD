@@ -14,11 +14,6 @@ jobs:
       - run: aws cloudformation wait stack-create-complete --stack-name circle
       - run: echo "[all]" > /tmp/ip
       - run: aws ec2 describe-instances --filters "Name=tag:Name,Values=circleci-Instance"  --output json --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" | grep IP | cut -d '"' -f 4 >> /tmp/ip
-      #- persist_to_workspace:
-      #    root: /tmp
-      #    paths:
-      #      - ip
-      #      - ${key}.pem
       - save_cache:
           key: ip
           paths:
@@ -27,8 +22,6 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
-      #- attach_workspace:
-      #  at: /tmp/
       - restore_cache:
           keys:
             - ip
@@ -39,4 +32,7 @@ workflows:
   awscircle:
     jobs:
       - CF
+      - CM:
+          reqieres:
+            - CF
 
