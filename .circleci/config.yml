@@ -25,6 +25,7 @@ jobs:
       - restore_cache:
           keys:
             - ip
+      - run: apk add ansible
       - checkout
       - run: ansible-playbook -i /tmp/ip main.yml --private-key /tmp/${key}.pem
 
