@@ -1,3 +1,8 @@
+Parameters:
+  EnvName:
+    Type: String
+    Default: circleci
+
 Resources:
   Ec2Instance:
    Type: 'AWS::EC2::Instance'
@@ -7,7 +12,9 @@ Resources:
       - !Ref InstanceSecurityGroup
     KeyName: deyaa-x1
     ImageId: 'ami-0194c3e07668a7e36' # you may need to find out what instance types are available in your region - use https://cloud-images.ubuntu.com/locator/ec2/
- 
+    Tags:
+      - Key: Name
+        Value: !Sub ${EnvName}-Instance
   InstanceSecurityGroup:
    Type: 'AWS::EC2::SecurityGroup'
    Properties:
@@ -22,8 +29,3 @@ Resources:
          ToPort: '3000'
          CidrIp: 0.0.0.0/0
 
-outputs:
-  IP4:
-    value: !GetAtt Ec2Instance.PublicIp
-    Export:
-      name: IP
