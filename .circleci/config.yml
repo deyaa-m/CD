@@ -33,6 +33,6 @@ workflows:
     jobs:
       - CF
       - CM:
-          reqieres:
+          requires:
             - CF
 
