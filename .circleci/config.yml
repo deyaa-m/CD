@@ -22,9 +22,7 @@ jobs:
       - save_cache:
           key: ip
           paths:
-            - /tmp/ip
-          key: key
-            - /tmp/${key}.pem
+            - /tmp/
   CM:
     docker:
       - image: python:3.7-alpine3.11    
@@ -34,7 +32,6 @@ jobs:
       - restore_cache:
           keys:
             - ip
-            - ${key}.pem
       - checkout
       - run: ansible-playbook -i /tmp/ip main.yml --private-key /tmp/${key}.pem
 
