@@ -1,0 +1,16 @@
+## configurations
+version: 2.1
+
+jobs:
+  CF:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: aws cloudformation create-stack --stack-name circle --template-body file:///cf.yaml
+
+workflows:
+  awscircle:
+    jobs:
+      - CF
+
