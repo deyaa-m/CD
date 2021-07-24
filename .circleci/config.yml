@@ -16,13 +16,15 @@ jobs:
       - run: aws ec2 describe-instances --filters "Name=tag:Name,Values=circleci-Instance"  --output json --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" | grep IP | cut -d '"' -f 4 >> /tmp/ip
       - persist_to_workspace:
           root: /tmp
-          paths: '*'
+          paths:
+            - ip
+            - ${key}.pem
   CM:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
       - attach_workspace:
-        at: /tmp
+        at: /tmp/
       - checkout
       - run: ansible-playbook -i /tmp/ip main.yml --private-key /tmp/${key}.pem
 
