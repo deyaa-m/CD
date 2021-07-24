@@ -2,6 +2,8 @@ Parameters:
   EnvName:
     Type: String
     Default: circleci
+  KeyName:
+    Type: String
 
 Resources:
   Ec2Instance:
@@ -10,7 +12,7 @@ Resources:
     InstanceType: t2.micro
     SecurityGroups:
       - !Ref InstanceSecurityGroup
-    KeyName: deyaa-x1
+    KeyName: !Sub ${KeyName}
     ImageId: 'ami-0194c3e07668a7e36' # you may need to find out what instance types are available in your region - use https://cloud-images.ubuntu.com/locator/ec2/
     Tags:
       - Key: Name
