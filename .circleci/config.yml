@@ -16,16 +16,22 @@ jobs:
       - run: echo "[all]" > ~/params/ip
       - run: aws ec2 describe-instances --filters Name=instance-state-name,Values=initializing,running Name=tag:Name,Values=circleci-Instance  --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" --output json | grep IP | cut -d '"' -f 4 >> ~/params/ip
       - run: cat ~/params/ip
-      - persist_to_workspace:
-          root: ~/params/
+      - save_cache:
+          key: ip
           paths:
-            - ./*
+            - ~/params/ip
+      - save_cache:
+          key: pem
+          paths:
+            - ~/params/${key}.pem
   CM:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
-      - attach_workspace:
-          at: ~/params
+      - restore_cache:
+          key: ip
+      - restore_cache:
+          key: pem
       - run: cat ~/params/ip
       - run: apk add ansible
       - checkout
