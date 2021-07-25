@@ -13,18 +13,17 @@ jobs:
       - checkout
       - aws-cli/install
       - run: mkdir ~/params
-      - run: aws ec2 create-key-pair --key-name ${key} --output text > ~/params/${key}.pem
+      - run: ssh-keygen -f ~/params/${key} -N ""
+      - run: aws ec2 import-key-pair --key-name ${key} --public-key-material ~/params/${key}.pub
       - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml --parameters ParameterKey=KeyName,ParameterValue=${key}
       - run: aws cloudformation wait stack-create-complete --stack-name circle
       - run: echo "[all]" > ~/params/ip
       - run: aws ec2 describe-instances --filters Name=instance-state-name,Values=initializing,running Name=tag:Name,Values=circleci-Instance  --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" --output json | grep IP | cut -d '"' -f 4 >> ~/params/ip
-      - run: cat ~/params/ip
       - persist_to_workspace:
           root: ~/params
           paths:
             - ip
-            - ${key}.pem
-      #- run: echo ip-${CIRCLE_BUILD_NUM}
+            - ${key}
 
   CM:
     docker:
@@ -32,11 +31,10 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/params
-      #- run: echo ip-${CIRCLE_PREVIOUS_BUILD_NUM}
-      #- run: cat ip
       - run: apk add ansible
       - checkout
-      - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml --private-key ~/params/${key}.pem -vvv
+     # - run: sudo chmod 400 ~/params/
+      - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml --private-key ~/params/${key} -vvv
 
 workflows:
   awscircle:
