@@ -17,22 +17,23 @@ jobs:
       - run: aws ec2 describe-instances --filters Name=instance-state-name,Values=initializing,running Name=tag:Name,Values=circleci-Instance  --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" --output json | grep IP | cut -d '"' -f 4 >> ~/params/ip
       - run: cat ~/params/ip
       - save_cache:
-          key: key-${CIRCLE_BUILD_NUM}
+          key: cache
           paths:
-            - ~/params
-      - run: echo ip-${CIRCLE_BUILD_NUM}
+            - ~/params/ip
+            - ~/params/${key}.pem
+      #- run: echo ip-${CIRCLE_BUILD_NUM}
 
   CM:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
       - restore_cache:
-          key: key-${CIRCLE_PREVIOUS_BUILD_NUM}
-      - run: echo ip-${CIRCLE_PREVIOUS_BUILD_NUM}
-      - run: cat ~/params/ip
+          key: cache
+      #- run: echo ip-${CIRCLE_PREVIOUS_BUILD_NUM}
+      - run: cat ip
       - run: apk add ansible
       - checkout
-      - run: ansible-playbook -i ~/params/ip main.yml --private-key ~/params/${key}.pem -vvv
+      - run: ansible-playbook -i ip main.yml --private-key ${key}.pem -vvv
 
 workflows:
   awscircle:
