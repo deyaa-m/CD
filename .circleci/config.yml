@@ -33,7 +33,7 @@ jobs:
           at: ~/params
       - run: apk add ansible
       - checkout
-      - run: sudo chmod 400 ~/params/
+      #- run: sudo chmod 400 ~/params/
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml --private-key ~/params/circleci -vvv
 
 workflows:
