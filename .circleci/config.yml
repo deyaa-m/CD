@@ -19,6 +19,7 @@ jobs:
       - run: aws cloudformation wait stack-create-complete --stack-name circle
       - run: echo "[all]" > ~/params/ip
       - run: aws ec2 describe-instances --filters Name=instance-state-name,Values=initializing,running Name=tag:Name,Values=circleci-Instance  --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" --output json | grep IP | cut -d '"' -f 4 >> ~/params/ip
+      - run: chmod 644 ~/params/${key}
       - persist_to_workspace:
           root: ~/params
           paths:
@@ -33,7 +34,7 @@ jobs:
           at: ~/params
       - run: apk add ansible
       - checkout
-      #- run: sudo chmod 400 ~/params/
+      - run: chmod 400 ~/params/circleci
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml --private-key ~/params/circleci -vvv
 
 workflows:
