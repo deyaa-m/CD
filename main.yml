@@ -4,8 +4,8 @@
   user: ubuntu
   #ansible_ssh_private_key_file: ~/.ssh/id_rsa
   gather_facts: no
-  vars:
-    ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
-    ANSIBLE_HOST_KEY_CHECKING: False
+  #vars:
+  #  ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
+  #  ANSIBLE_HOST_KEY_CHECKING: False
   roles:
    - setup

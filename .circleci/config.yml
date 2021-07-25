@@ -36,7 +36,7 @@ jobs:
       #- run: cat ip
       - run: apk add ansible
       - checkout
-      - run: ansible-playbook -i ~/params/ip main.yml --private-key ~/params/${key}.pem -vvv
+      - run: ansible-playbook -i ~/params/ip main.yml --private-key ~/params/${key}.pem -vvv -o StrictHostKeyChecking=no
 
 workflows:
   awscircle:
