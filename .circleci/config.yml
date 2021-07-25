@@ -9,6 +9,7 @@ jobs:
       key: circleci
     steps:
       - checkout
+      - run: mkdir ~/params
       - run: aws ec2 create-key-pair --key-name ${key} --output text > ~/params/${key}.pem
       - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml --parameters ParameterKey=KeyName,ParameterValue=${key}
       - run: aws cloudformation wait stack-create-complete --stack-name circle
