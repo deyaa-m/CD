@@ -47,7 +47,25 @@ jobs:
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml -vvv #--private-key ~/params/${key} -vvv
       - Destroy:
           when: on_fail
-
+  Smoke:
+    docker:
+      - image: python:3.7-alpine3.11 
+    steps:
+      - attach_workspace:
+        at: ~/params/
+      - run: apk add curl
+      - command: |
+          url="www.google.com"
+          if curl -s --head ${url}
+          then
+            return 0
+          else
+            return 1
+          fi
+  #        while var=readline+1 ~/params/ip; curl var:3000; done
+      - Destroy:
+          when: on_fail    
+          
 workflows:
   awscircle:
     jobs:
