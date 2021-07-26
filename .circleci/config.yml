@@ -39,6 +39,7 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
+      - aws-cli/install
       - attach_workspace:
           at: ~/params/
       - run: apk add ansible
