@@ -33,7 +33,7 @@ jobs:
             - ip
       #      - ${key}
       - Destroy
-          when: on_fail
+        when: on_fail
 
   CM:
     docker:
@@ -45,8 +45,8 @@ jobs:
       - checkout
       - run: chmod 400 ~/params/${key}
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml -vvv #--private-key ~/params/${key} -vvv
-      - Destroy:
-          when: on_fail
+      - Destroy
+        when: on_fail
   Smoke:
     docker:
       - image: python:3.7-alpine3.11 
@@ -63,8 +63,8 @@ jobs:
             return 1
           fi
   #        while var=readline+1 ~/params/ip; curl var:3000; done
-      - Destroy:
-          when: on_fail    
+      - Destroy
+        when: on_fail    
           
 workflows:
   awscircle:
