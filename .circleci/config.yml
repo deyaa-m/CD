@@ -5,11 +5,12 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.3
 
 commands:
-  Destroy:
+  destroy:
     steps:
       - run:
           name: Destroy stack
           command: aws cloudformation delete-stack --stack-name circle 
+          when: on_fail
 jobs:
   CF:
     docker:
@@ -32,8 +33,7 @@ jobs:
           paths:
             - ip
       #      - ${key}
-      - Destroy
-        when: on_fail
+      - destroy 
 
   CM:
     docker:
@@ -45,8 +45,8 @@ jobs:
       - checkout
       - run: chmod 400 ~/params/${key}
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml -vvv #--private-key ~/params/${key} -vvv
-      - Destroy
-        when: on_fail
+      - destroy
+
   Smoke:
     docker:
       - image: python:3.7-alpine3.11 
@@ -63,8 +63,7 @@ jobs:
             return 1
           fi
   #        while var=readline+1 ~/params/ip; curl var:3000; done
-      - Destroy
-        when: on_fail    
+      - < destroy
           
 workflows:
   awscircle:
