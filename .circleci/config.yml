@@ -43,6 +43,9 @@ jobs:
           at: ~/params/
       - run: apk add ansible
       - checkout
+      - add_ssh_key:
+          fingerprints:
+            - "72:5a:f5:fe:95:8b:80:8f:c3:4c:0c:2f:e9:65:c2:fd"
       #- run: chmod 400 ~/params/${key}
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml -vvv #--private-key ~/params/${key} -vvv
       - destroy
