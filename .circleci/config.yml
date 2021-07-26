@@ -44,7 +44,7 @@ jobs:
           at: ~/params/
       - run: apk add ansible
       - checkout
-      - add_ssh_key:
+      - add_ssh_keys:
           fingerprints:
             - "72:5a:f5:fe:95:8b:80:8f:c3:4c:0c:2f:e9:65:c2:fd"
       #- run: chmod 400 ~/params/${key}
