@@ -43,7 +43,7 @@ jobs:
           at: ~/params/
       - run: apk add ansible
       - checkout
-      - run: chmod 400 ~/params/${key}
+      #- run: chmod 400 ~/params/${key}
       - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml -vvv #--private-key ~/params/${key} -vvv
       - destroy
 
