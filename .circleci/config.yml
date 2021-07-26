@@ -39,6 +39,7 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
+      - checkout
       - attach_workspace:
           at: ~/params/
       - run: apk add ansible curl
@@ -48,7 +49,6 @@ jobs:
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
             ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-      - checkout
       - add_ssh_keys:
           fingerprints:
             - "72:5a:f5:fe:95:8b:80:8f:c3:4c:0c:2f:e9:65:c2:fd"
