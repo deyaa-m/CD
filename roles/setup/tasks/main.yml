@@ -11,6 +11,11 @@
   apt:
     update_cache: yes
 
+- name: create udacity directory
+  file: 
+    path: ~/udacity
+    state: directory
+    
 - name: "index.js copy"
   copy:
     src: index.js
