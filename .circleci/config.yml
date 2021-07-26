@@ -3,6 +3,13 @@ version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@2.0.3
+
+commands:
+  Destroy:
+    steps:
+      - run:
+          name: Destroy stack
+          command: aws cloudformation delete-stack --stack-name circle 
 jobs:
   CF:
     docker:
@@ -13,29 +20,33 @@ jobs:
       - checkout
       - aws-cli/install
       - run: mkdir ~/params
-      - run: ssh-keygen -f ~/params/${key} -N ""
-      - run: aws ec2 import-key-pair --key-name ${key} --public-key-material fileb://~/params/${key}.pub
+      #- run: ssh-keygen -f ~/params/${key} -N ""
+      #- run: aws ec2 import-key-pair --key-name ${key} --public-key-material fileb://~/params/${key}.pub
       - run: aws cloudformation create-stack --stack-name circle --template-body file://cf.yaml --parameters ParameterKey=KeyName,ParameterValue=${key}
       - run: aws cloudformation wait stack-create-complete --stack-name circle
       - run: echo "[all]" > ~/params/ip
       - run: aws ec2 describe-instances --filters Name=instance-state-name,Values=initializing,running Name=tag:Name,Values=circleci-Instance  --query "Reservations[*].Instances[*].{IP:PublicIpAddress}" --output json | grep IP | cut -d '"' -f 4 >> ~/params/ip
-      - run: chmod 644 ~/params/${key}
+      #- run: chmod 644 ~/params/${key}
       - persist_to_workspace:
-          root: ~/params
+          root: ~/params/
           paths:
             - ip
-            - ${key}
+      #      - ${key}
+      - Destroy
+          when: on_fail
 
   CM:
     docker:
       - image: python:3.7-alpine3.11    
     steps:
       - attach_workspace:
-          at: ~/params
+          at: ~/params/
       - run: apk add ansible
       - checkout
       - run: chmod 400 ~/params/${key}
-      - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml --private-key ~/params/${key} -vvv
+      - run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/params/ip main.yml -vvv #--private-key ~/params/${key} -vvv
+      - Destroy:
+          when: on_fail
 
 workflows:
   awscircle:
